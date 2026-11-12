@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+Thumbs.db
+.buddy.bak/
+**/BUDDY-REPORT.md
+**/.buddy-agent-fix.md
+

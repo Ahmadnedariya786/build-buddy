@@ -1,0 +1,46 @@
+{
+  "name": "build-buddy",
+  "version": "1.0.0",
+  "description": "The patient AI companion & agent bridge for vibe-coders. Catches every hidden bug, explains them with everyday metaphors, and hands off exact fixes to AI coding agents.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "build-buddy": "./bin/build-buddy.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./bin/build-buddy.js",
+    "dev": "tsx src/index.ts",
+    "test": "node dist/index.js --mock"
+  },
+  "keywords": [
+    "vibe-coding",
+    "deepseek",
+    "ai-agent",
+    "antigravity",
+    "cursor",
+    "windsurf",
+    "cline",
+    "code-fixer",
+    "cli"
+  ],
+  "author": "Build Buddy Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
+    "fast-glob": "^3.3.3",
+    "openai": "^4.79.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3",
+    "tsx": "^4.19.2"
+  }
+}
