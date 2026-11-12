@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import pc from 'picocolors';
 
 import { scanProject } from './scanner';
-import { analyzeProjectWithDeepSeek } from './deepseek';
+import { analyzeProjectWithGemini } from './gemini';
 import {
   generateHumanReport,
   generateAgentPayload,
@@ -81,13 +81,13 @@ async function runCli(): Promise<void> {
 
   program
     .name('build-buddy')
-    .description('The patient AI companion and agent-bridge for non-coders and vibe-coders.')
+    .description('The patient AI companion and agent-bridge for non-coders and vibe-coders (powered by Google Gemini).')
     .version('1.0.0')
     .argument('[directory]', 'Target project directory to inspect', '.')
     .option('-f, --fix', 'Automatically apply safe fixes to your project files', false)
-    .option('-k, --key <apiKey>', 'DeepSeek API key (or set DEEPSEEK_API_KEY env var)')
-    .option('-m, --model <model>', 'DeepSeek model to use (default: deepseek-chat)', 'deepseek-chat')
-    .option('--mock', 'Run in test/mock mode without requiring an active DeepSeek API key', false)
+    .option('-k, --key <apiKey>', 'Google Gemini API key (or set GEMINI_API_KEY in .env)')
+    .option('-m, --model <model>', 'Google Gemini model to use (default: gemini-2.5-flash)', 'gemini-2.5-flash')
+    .option('--mock', 'Run in test/mock mode without requiring an active Gemini API key', false)
     .option('--agent-only', 'Only generate the AI agent handoff file (.buddy-agent-fix.md)', false)
     .option('--dry-run', 'Preview fixes without writing modifications to disk', false)
     .option('--init-demo', 'Scaffold a broken demo app to experiment with Build Buddy', false)
@@ -139,12 +139,12 @@ async function runCli(): Promise<void> {
 
   console.log(`🔍 Discovered ${pc.bold(overview.files.length.toString())} code files (${overview.totalLines} lines) in your ${pc.bold(overview.projectType)}.`);
 
-  // 2. DeepSeek Harness Brain
-  const hasKey = !!(cliOptions.key || process.env.DEEPSEEK_API_KEY);
+  // 2. Google Gemini API Brain
+  const hasKey = !!(cliOptions.key || process.env.GEMINI_API_KEY || process.env.DEEPSEEK_API_KEY);
   if (!hasKey && !cliOptions.mock) {
     console.log('');
-    console.log(pc.yellow('💡 Note: No DEEPSEEK_API_KEY detected. Running in friendly --mock mode!'));
-    console.log(pc.dim('To connect live DeepSeek AI: set DEEPSEEK_API_KEY=your_key or pass --key <key>\n'));
+    console.log(pc.yellow('💡 Note: No GEMINI_API_KEY detected in your .env file. Running in friendly --mock mode!'));
+    console.log(pc.dim('To connect live Gemini AI: paste your free key into .env (GEMINI_API_KEY=your_key) or pass --key <key>\n'));
     cliOptions.mock = true;
   }
 
@@ -152,15 +152,15 @@ async function runCli(): Promise<void> {
 
   let diagnosis;
   try {
-    diagnosis = await analyzeProjectWithDeepSeek(overview, {
+    diagnosis = await analyzeProjectWithGemini(overview, {
       apiKey: cliOptions.key,
       model: cliOptions.model,
       mock: cliOptions.mock
     });
   } catch (err: any) {
-    console.error(pc.red(`❌ DeepSeek Brain encountered an issue: ${err.message}`));
+    console.error(pc.red(`❌ Gemini Brain encountered an issue: ${err.message}`));
     console.log(pc.yellow('Falling back to safe local mock analysis so your workflow is never interrupted...'));
-    diagnosis = await analyzeProjectWithDeepSeek(overview, { mock: true });
+    diagnosis = await analyzeProjectWithGemini(overview, { mock: true });
   }
 
   // 3. Generate outputs

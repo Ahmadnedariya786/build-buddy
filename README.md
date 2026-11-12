@@ -5,7 +5,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
-[![DeepSeek](https://img.shields.io/badge/Powered%20By-DeepSeek%20Harness-blueviolet.svg)](https://deepseek.com)
+[![Google Gemini](https://img.shields.io/badge/Powered%20By-Google%20Gemini%202.5%20Flash-4285F4.svg)](https://aistudio.google.com)
 [![AI Agents Ready](https://img.shields.io/badge/AI%20Agents-Antigravity%20%7C%20Cursor%20%7C%20Windsurf%20%7C%20Cline-orange.svg)](#agent-bridge)
 
 ---
@@ -17,7 +17,7 @@ When you're **"vibe coding"**—building web apps, prototypes, and tools with AI
 
 **Build Buddy turns cryptic panic into friendly clarity.**
 
-Build Buddy scans your entire project, maps out all code relationships, and feeds them into the **DeepSeek API Harness**. It catches **every** hidden bug, broken import, missing variable, or logical flaw (not just the first one) and produces:
+Build Buddy scans your entire project, maps out all code relationships, and feeds them into the **Free Google Gemini API** (`gemini-2.5-flash`). It catches **every** hidden bug, broken import, missing variable, or logical flaw (not just the first one) and produces:
 1. **A Human Guide (`BUDDY-REPORT.md`)**: Written in plain English using everyday metaphors that a 10-year-old would understand—zero jargon.
 2. **An AI Agent Handoff Payload (`.buddy-agent-fix.md`)**: A structured directive and unified diff that any coding AI agent (such as **Antigravity**, **Cursor**, **Windsurf**, or **Cline**) can ingest and execute autonomously.
 3. **Auto-Fix Engine (`--fix`)**: Directly applies safe fixes to your code and creates safety backups.
@@ -26,37 +26,35 @@ Build Buddy scans your entire project, maps out all code relationships, and feed
 
 ## 🚀 Quickstart
 
-Run directly using `npx` (no installation required):
+Run directly using `npx` or local CLI:
 
 ```bash
 # Scan and diagnose your current project
-npx build-buddy
+build-buddy
 
 # Scan and automatically apply fixes
-npx build-buddy --fix
+build-buddy --fix
 
 # Try it instantly on a sample demo app without an API key
-npx build-buddy --init-demo
-npx build-buddy demo-app --mock --fix
+build-buddy --init-demo
+build-buddy demo-app --mock --fix
 ```
 
 ---
 
-## ⚙️ Configuration & DeepSeek API Key
+## 🔑 Free Google Gemini API Key Setup
 
-Build Buddy connects directly to the official **DeepSeek API**:
+Build Buddy uses Google's free-tier **Gemini API** powered by `gemini-2.5-flash`:
 
-```bash
-# Option 1: Set in your environment or .env file
-export DEEPSEEK_API_KEY="sk-your-deepseek-api-key"
-npx build-buddy
-
-# Option 2: Pass as a command line flag
-npx build-buddy --key sk-your-deepseek-api-key
-
-# Option 3: Use DeepSeek Reasoner model (R1)
-npx build-buddy --model deepseek-reasoner
-```
+1. Get your free API key at **[Google AI Studio](https://aistudio.google.com/app/apikey)** (no credit card required).
+2. Open the `.env` file in the project folder and paste your key:
+   ```env
+   GEMINI_API_KEY=AIzaSy...your_actual_key_here
+   ```
+3. Alternatively, pass it directly via CLI flag:
+   ```bash
+   build-buddy --key AIzaSy...your_actual_key_here
+   ```
 
 > **Note:** If no API key is detected, Build Buddy automatically engages its **Mock Engine (`--mock`)** so you can test features and workflows without any setup barrier!
 
@@ -68,11 +66,11 @@ npx build-buddy --model deepseek-reasoner
 |------|-----------|-------------|---------|
 | `[directory]` | | Target directory to inspect | `.` (current folder) |
 | `--fix` | `-f` | Automatically apply safe fixes to files | `false` |
-| `--key <apiKey>` | `-k` | DeepSeek API key | `process.env.DEEPSEEK_API_KEY` |
-| `--model <model>` | `-m` | DeepSeek model (`deepseek-chat` or `deepseek-reasoner`) | `deepseek-chat` |
+| `--key <apiKey>` | `-k` | Google Gemini API key (or set `GEMINI_API_KEY` in `.env`) | Read from `.env` |
+| `--model <model>` | `-m` | Google Gemini model to use | `gemini-2.5-flash` |
 | `--mock` | | Run in mock engine mode (works without API key) | `false` |
 | `--agent-only` | | Generate only the AI agent handoff file | `false` |
-| `--dry-run` | | Preview changes without modifying files | `false` |
+| `--dry-run` | | Preview fixes without writing modifications to disk | `false` |
 | `--init-demo` | | Scaffold a broken demo app to experiment safely | `false` |
 | `--version` | `-V` | Output version number | `1.0.0` |
 | `--help` | `-h` | Display help screen | |
@@ -124,7 +122,7 @@ Contains structured directives, JSON payloads, and exact before/after snippets t
 ## 🤝 Agent Handoff Workflows
 
 ### With Google Antigravity
-1. Run `npx build-buddy` in your project terminal.
+1. Run `build-buddy` in your project terminal.
 2. Tell Antigravity:  
    `"Please read .buddy-agent-fix.md and execute all recommended fixes."`
 3. Antigravity reads the unified payload and applies the patches across your repository!
@@ -144,9 +142,11 @@ build-buddy/
 ├── src/
 │   ├── types.ts          # Core TypeScript data contracts & interfaces
 │   ├── scanner.ts        # Smart recursive scanner (ignores noise, detects frameworks)
-│   ├── deepseek.ts       # DeepSeek Harness integration & system prompt engine
+│   ├── gemini.ts         # Google Gemini API integration (gemini-2.5-flash) & prompt engine
+│   ├── deepseek.ts       # Backward-compatibility alias
 │   ├── reporter.ts       # Dual markdown generator (BUDDY-REPORT & .buddy-agent-fix)
 │   └── index.ts          # CLI argument parser & workflow coordinator
+├── .env                  # Paste your GEMINI_API_KEY here
 ├── package.json
 └── tsconfig.json
 ```

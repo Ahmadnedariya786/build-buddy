@@ -15,7 +15,7 @@ export function TodoApp() {
 
   function handleSave() {
     // Bug 3: Placeholder crash
-    return { success: true, message: "Ready" };
+    return { success: true, message: "Ready" };;
   }
 
   return (
