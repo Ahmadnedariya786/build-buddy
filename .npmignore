@@ -1,0 +1,25 @@
+# Source files & TS config (shipped in dist/)
+src/
+tsconfig.json
+
+# Environment & sensitive credentials
+.env
+.env.*
+.env.example
+
+# Dependencies & caches
+node_modules/
+.buddy.bak/
+**/.buddy.bak/
+demo-app/
+
+# Generated reports & logs
+*.log
+**/BUDDY-REPORT.md
+**/.buddy-agent-fix.md
+
+# OS & Git files
+.git/
+.github/
+.DS_Store
+Thumbs.db

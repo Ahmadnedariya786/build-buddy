@@ -1,26 +1,29 @@
 {
-  "name": "build-buddy",
+  "name": "build-buddy-vibe",
   "version": "1.0.0",
-  "description": "The patient AI companion & agent bridge for vibe-coders. Catches every hidden bug, explains them with everyday metaphors, and hands off exact fixes to AI coding agents.",
+  "description": "The patient AI companion and universal agent-bridge for non-coders and vibe-coders (powered by Google Gemini).",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "build-buddy": "./bin/build-buddy.js"
+    "build-buddy-vibe": "./dist/index.js",
+    "build-buddy": "./dist/index.js"
   },
   "files": [
     "dist",
-    "bin",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
-    "start": "node ./bin/build-buddy.js",
+    "start": "node ./dist/index.js",
     "dev": "tsx src/index.ts",
-    "test": "node dist/index.js --mock"
+    "test": "node dist/index.js --mock",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "vibe-coding",
-    "deepseek",
+    "gemini",
+    "google-gemini",
     "ai-agent",
     "antigravity",
     "cursor",

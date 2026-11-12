@@ -46,7 +46,7 @@ export function TodoApp() {
   const [todos, setTodos] = useState([]);
   
   // Bug 1: Typo in console.log
-  conosle.log("Rendering TodoApp...");
+  console.log("Rendering TodoApp...");
 
   function handleAdd() {
     // Bug 2: Missing variable declaration before usage

@@ -1,11 +1,25 @@
+# Dependencies
 node_modules/
+
+# Compiled output
 dist/
+
+# Environment and sensitive keys
 .env
 .env.local
-*.log
-.DS_Store
-Thumbs.db
+.env.*.local
+!.env.example
+
+# Local demo project & temporary backups
+demo-app/
 .buddy.bak/
+**/.buddy.bak/
+
+# Generated reports & logs
+*.log
 **/BUDDY-REPORT.md
 **/.buddy-agent-fix.md
 
+# Operating System files
+.DS_Store
+Thumbs.db
