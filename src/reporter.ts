@@ -201,9 +201,9 @@ export function applyFixes(
           continue;
         }
 
-        // Try exact match first
+        // Try exact match first (replace all instances)
         if (content.includes(issue.originalSnippet)) {
-          content = content.replace(issue.originalSnippet, issue.fixedSnippet);
+          content = content.split(issue.originalSnippet).join(issue.fixedSnippet);
           fileModified = true;
           appliedCount++;
           details.push({
@@ -211,13 +211,13 @@ export function applyFixes(
             success: true
           });
         } else {
-          // Normalize line endings (\r\n vs \n) and try again
+          // Normalize line endings (\r\n vs \n) and try again (replace all instances)
           const normalizedContent = content.replace(/\r\n/g, '\n');
           const normalizedSnippet = issue.originalSnippet.replace(/\r\n/g, '\n');
           const normalizedFixed = issue.fixedSnippet.replace(/\r\n/g, '\n');
 
           if (normalizedContent.includes(normalizedSnippet)) {
-            content = normalizedContent.replace(normalizedSnippet, normalizedFixed);
+            content = normalizedContent.split(normalizedSnippet).join(normalizedFixed);
             fileModified = true;
             appliedCount++;
             details.push({

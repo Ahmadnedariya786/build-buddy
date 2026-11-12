@@ -108,23 +108,54 @@ export async function analyzeProjectWithGemini(
     );
   }
 
-  const modelName = options.model || 'gemini-2.5-flash';
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const generativeModel = genAI.getGenerativeModel({
-    model: modelName,
-    systemInstruction: SYSTEM_PROMPT,
-    generationConfig: {
-      responseMimeType: 'application/json',
-      temperature: 0.1
-    }
-  });
+  const preferredModel = options.model || 'gemini-2.5-flash';
 
+  const candidateModels = Array.from(
+    new Set([
+      preferredModel,
+      'gemini-2.5-flash',
+      'gemini-3-flash-preview',
+      'gemini-3.5-flash-lite',
+      'gemini-3.1-flash-lite',
+      'gemini-3.8-flash'
+    ])
+  );
+
+  const genAI = new GoogleGenerativeAI(apiKey);
   const userContent = buildUserPrompt(overview);
-  const result = await generativeModel.generateContent(userContent);
-  const content = result.response.text();
+
+  let content: string | undefined;
+  let lastError: any;
+  let successfulModel = preferredModel;
+
+  for (const modelName of candidateModels) {
+    try {
+      const generativeModel = genAI.getGenerativeModel({
+        model: modelName,
+        systemInstruction: SYSTEM_PROMPT,
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.1
+        }
+      });
+
+      const result = await generativeModel.generateContent(userContent);
+      content = result.response.text();
+      if (content) {
+        successfulModel = modelName;
+        break;
+      }
+    } catch (err: any) {
+      lastError = err;
+      // Try next candidate model if 404 or 503
+      continue;
+    }
+  }
 
   if (!content) {
-    throw new Error('Received an empty response from Google Gemini API.');
+    throw new Error(
+      `Received an empty response from Google Gemini API. Last error: ${lastError?.message || 'unknown error'}`
+    );
   }
 
   const parsed = extractAndParseJson(content);
